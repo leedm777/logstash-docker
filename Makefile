@@ -18,6 +18,7 @@ DEFAULT_IMAGE_FLAVOR ?= x-pack
 IMAGE_TAG := $(ELASTIC_REGISTRY)/logstash/logstash
 HTTPD ?= logstash-docker-artifact-server
 
+PYTHON := python3.5
 FIGLET := pyfiglet -w 160 -f puffy
 
 all: build test
@@ -81,7 +82,7 @@ push: test
 
 # The tests are written in Python. Make a virtualenv to handle the dependencies.
 venv: requirements.txt
-	test -d venv || virtualenv --python=python3.5 venv
+	test -d venv || virtualenv --python=$(PYTHON) venv
 	pip install -r requirements.txt
 	touch venv
 
