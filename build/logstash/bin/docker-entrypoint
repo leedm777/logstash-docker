@@ -6,8 +6,16 @@
 # host system.
 env2yaml /usr/share/logstash/config/logstash.yml
 
+# Default to running logstash if no arguments are given, or if first argument
+# starts with a -
 if [[ -z $1 ]] || [[ ${1:0:1} == '-' ]] ; then
-  exec logstash "$@"
-else
-  exec "$@"
+  set -- logstash "$@"
 fi
+
+# Change to the logstash user if we're running the logstash command, and
+# not already running as an unprivileged user
+if [ "$1" = 'logstash' -a "$(id -u)" = '0' ]; then
+    set -- gosu logstash "$@"
+fi
+
+exec "$@"
